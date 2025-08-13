@@ -6,7 +6,6 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-logo-container">
-        {/* Logo image */}
         <img
           src="/profile-logo.png"
           alt="Profile Builder Logo"

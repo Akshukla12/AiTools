@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { ProfileContext } from "../ProfileContext";
 import { copyToClipboard, downloadText } from "../utils/exportUtils";
 
-// Helper: splits About Me into card lines at newlines or emoji/number/bullet
+// Helper: split About Me into visually distinct points
 function formatAboutMeOutput(response) {
   if (!response) return [];
-  // Split on newlines or before a line beginning with emoji, dash, or number
+  // Split on newlines or lines starting with emoji/dash/number
   return response
     .split(/\n|(?=^[\p{Emoji}•–—\-0-9])/gu)
     .map(line => line.trim())
@@ -70,38 +70,15 @@ export default function AboutMe() {
           rows={4}
           required
         />
-        {error && <div style={{ color: "red" }}>{error}</div>}
+        {error && <div className="form-error">{error}</div>}
         <button type="submit" disabled={loading || !summary.trim()}>
           {loading ? "Generating..." : "Generate About Me"}
         </button>
       </form>
-
       {lines.length > 0 && (
-        <div
-          className="aboutme-card"
-          style={{
-            marginTop: "1.8rem",
-            padding: "2rem 2.2rem 1.3rem",
-            background: "#f8fafc",
-            borderRadius: "17px",
-            boxShadow: "0 4px 20px rgba(37,79,254,0.10)",
-            border: "1.5px solid #254ffe22",
-            color: "#142e61"
-          }}
-        >
+        <div className="aboutme-card">
           {lines.map((line, idx) => (
-            <div
-              key={idx}
-              className="aboutme-line"
-              style={{
-                fontSize: idx === 0 ? "1.09rem" : "1.06rem",
-                marginBottom: "1.14rem",
-                fontWeight: idx === 0 ? 700 : 500,
-                display: "flex",
-                alignItems: "flex-start",
-                letterSpacing: ".01em"
-              }}
-            >
+            <div key={idx} className="aboutme-line">
               {line}
             </div>
           ))}

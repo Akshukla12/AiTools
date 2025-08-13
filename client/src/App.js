@@ -13,10 +13,7 @@ function App() {
       <Router>
         <div style={{ display: "flex", minHeight: "100vh" }}>
           <Sidebar />
-
-          {/* Main Content Area */}
           <div style={{ marginLeft: "220px", padding: "40px 30px", flex: 1 }}>
-            {/* Centered heading */}
             <h1
               style={{
                 textAlign: "center",
@@ -29,8 +26,6 @@ function App() {
             >
               LinkedIn Profile Builder
             </h1>
-
-            {/* Page Content */}
             <Routes>
               <Route path="/about" element={<AboutMe />} />
               <Route path="/headline" element={<Headline />} />

@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { ProfileContext } from "../ProfileContext";
 import { copyToClipboard, downloadText } from "../utils/exportUtils";
 
-// Helper: turn Gemini output into a clean, unique headline list
+// Helper: turn Gemini output into clean headline list
 function parseHeadlines(response) {
   if (!response) return [];
   return response
@@ -80,7 +80,6 @@ export default function Headline() {
           {loading ? "Generating..." : "Generate Headline"}
         </button>
       </form>
-
       {headlineList.length > 0 && (
         <div style={{ marginTop: "1.7rem" }}>
           <strong className="output-title">AI-Generated LinkedIn Headline Suggestions:</strong>

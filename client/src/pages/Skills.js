@@ -2,10 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { ProfileContext } from "../ProfileContext";
 import { copyToClipboard, downloadText } from "../utils/exportUtils";
 
-// Helper: turns AI output into skill chips
+// Helper: turn AI output into skill chips
 function parseSkills(response) {
   if (!response) return [];
-  // Prefer comma separation, otherwise split lines
   let skills = [];
   if (response.includes(",")) {
     skills = response
@@ -18,7 +17,6 @@ function parseSkills(response) {
       .map(s => s.trim())
       .filter(s => s.length > 0);
   }
-  // Remove bullets/numbers, de-duplicate, and cap at 20 skills
   return [...new Set(skills.map(sk =>
     sk.replace(/^([0-9]+[.)-]|[-•])\s*/, ""))
   )].slice(0, 20);
@@ -71,16 +69,15 @@ export default function Skills() {
         <label>Paste your resume summary or describe your expertise *</label>
         <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={e => setInput(e.target.value)}
           rows={3}
           required
         />
-        {error && <div style={{ color: "red" }}>{error}</div>}
+        {error && <div className="form-error">{error}</div>}
         <button type="submit" disabled={loading || !input.trim()}>
           {loading ? "Generating..." : "Generate Skills"}
         </button>
       </form>
-
       {skillsArr.length > 0 && (
         <div
           style={{
@@ -103,20 +100,7 @@ export default function Skills() {
             marginBottom: "22px"
           }}>
             {skillsArr.map((skill, idx) => (
-              <span
-                key={idx}
-                style={{
-                  background: "#e3ecff",
-                  border: "1px solid #254ffe55",
-                  color: "#254ffe",
-                  borderRadius: "22px",
-                  padding: "8px 20px",
-                  fontWeight: 500,
-                  fontSize: ".97rem",
-                  boxShadow: "0 1px 6px rgba(37, 79, 254, .08)",
-                  letterSpacing: ".01em"
-                }}
-              >
+              <span key={idx} className="skills-chip">
                 {skill}
               </span>
             ))}
