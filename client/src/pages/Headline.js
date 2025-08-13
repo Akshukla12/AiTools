@@ -2,15 +2,14 @@ import React, { useState, useContext, useEffect } from "react";
 import { ProfileContext } from "../ProfileContext";
 import { copyToClipboard, downloadText } from "../utils/exportUtils";
 
-// Helper: turn Gemini output into clean headline list
+// Helper: parse generated headlines into clean array
 function parseHeadlines(response) {
   if (!response) return [];
   return response
     .split(/\n/)
     .map(line => line.trim())
     .filter(line => line.length > 0)
-    .map(line => line.replace(/^([0-9]+[.)-]|[-••])\s*/, ""))
-    .filter(Boolean);
+    .map(line => line.replace(/^([0-9]+[.)-]|[-••])\s*/, ""));
 }
 
 export default function Headline() {
@@ -19,6 +18,8 @@ export default function Headline() {
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const apiBaseUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (profile.summary && !input) setInput(profile.summary);
@@ -34,17 +35,17 @@ export default function Headline() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/gemini", {
+      const res = await fetch(`${apiBaseUrl}/gemini`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          summary: `Generate 6 stylish, modern, LinkedIn headline suggestions (one per line, no numbering or bullets), concise and energetic, based on this: ${input}`
+          summary: `Generate 6 modern LinkedIn headline suggestions (one per line, no numbering) based on: ${input}`,
         }),
       });
       const data = await res.json();
       setResponse(data.response);
     } catch {
-      setError("Failed to contact the server. Try again.");
+      setError("Failed to contact the server.");
     } finally {
       setLoading(false);
     }
@@ -69,7 +70,6 @@ export default function Headline() {
           required
           maxLength={250}
           placeholder="E.g. Full Stack Developer | React & Node.js | AI & Cloud Enthusiast"
-          autoFocus
         />
         {error && <div className="form-error">{error}</div>}
         <button

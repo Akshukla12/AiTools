@@ -19,6 +19,9 @@ export default function AboutMe() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // base URL from env var
+  const apiBaseUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     setProfile((p) => ({ ...p, summary }));
   }, [summary, setProfile]);
@@ -33,11 +36,11 @@ export default function AboutMe() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/gemini", {
+      const res = await fetch(`${apiBaseUrl}/gemini`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          summary: `Write a modern, multi-point "About Me" or LinkedIn summary using emoji for each main point. Be concise, direct, and achievement-focused, first making an intro sentence, then breaking into 4-6 short emoji-bulleted highlights based on: ${summary}`,
+          summary: `Write a modern, multi-point "About Me" or LinkedIn summary using emoji for each main point, based on: ${summary}`,
         }),
       });
       const data = await res.json();

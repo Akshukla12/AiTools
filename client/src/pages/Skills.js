@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { ProfileContext } from "../ProfileContext";
 import { copyToClipboard, downloadText } from "../utils/exportUtils";
 
-// Helper: turn AI output into skill chips
+// Helper: parse skills from AI output
 function parseSkills(response) {
   if (!response) return [];
   let skills = [];
@@ -17,9 +17,7 @@ function parseSkills(response) {
       .map(s => s.trim())
       .filter(s => s.length > 0);
   }
-  return [...new Set(skills.map(sk =>
-    sk.replace(/^([0-9]+[.)-]|[-•])\s*/, ""))
-  )].slice(0, 20);
+  return [...new Set(skills)].slice(0, 20);
 }
 
 export default function Skills() {
@@ -28,6 +26,8 @@ export default function Skills() {
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const apiBaseUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (profile.summary && !input) setInput(profile.summary);
@@ -43,11 +43,11 @@ export default function Skills() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/gemini", {
+      const res = await fetch(`${apiBaseUrl}/gemini`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          summary: `Give me a comma-separated, concise and modern list of top 20 professional skills suitable for LinkedIn, based on this profile: ${input}`
+          summary: `Give me a comma-separated list of the top 20 professional skills for LinkedIn, based on: ${input}`,
         }),
       });
       const data = await res.json();
@@ -100,9 +100,7 @@ export default function Skills() {
             marginBottom: "22px"
           }}>
             {skillsArr.map((skill, idx) => (
-              <span key={idx} className="skills-chip">
-                {skill}
-              </span>
+              <span key={idx} className="skills-chip">{skill}</span>
             ))}
           </div>
           <button
